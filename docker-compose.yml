@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  wireguard:
+    build: .
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Moscow
+    volumes:
+      - ./config:/config
+    ports:
+      - "51820:51820/udp"
+    restart: unless-stopped

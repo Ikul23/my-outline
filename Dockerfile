@@ -1,12 +1,18 @@
+# Используем базовый образ WireGuard
 FROM linuxserver/wireguard:latest
 
-ENV PUID=1000
-ENV PGID=1000
-ENV TZ=Europe/Moscow
-ENV SERVERURL=auto
-ENV SERVERPORT=51820
-ENV PEERS=1
-ENV PEERDNS=auto
-ENV INTERNAL_SUBNET=10.13.13.0
+# Устанавливаем зависимости
+RUN apk add --no-cache bash qrencode
 
+# Копируем скрипты конфигурации
+COPY ./config /config
+COPY ./scripts /scripts
+
+# Даем права на исполнение скриптов
+RUN chmod +x /scripts/*.sh
+
+# Открываем порт для WireGuard
 EXPOSE 51820/udp
+
+# Запускаем скрипт при старте контейнера
+CMD ["/bin/bash", "/scripts/start.sh"]
