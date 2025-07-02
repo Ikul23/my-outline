@@ -1,18 +1,13 @@
-# Используем базовый образ WireGuard
 FROM linuxserver/wireguard:latest
 
-# Устанавливаем зависимости
-RUN apk add --no-cache bash qrencode
+# Устанавливаем зависимости с включением testing-репозитория
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
+  apk update && \
+  apk add --no-cache bash qrencode
 
-# Копируем скрипты конфигурации
+# Остальная часть файла без изменений
 COPY ./config /config
 COPY ./scripts /scripts
-
-# Даем права на исполнение скриптов
 RUN chmod +x /scripts/*.sh
-
-# Открываем порт для WireGuard
 EXPOSE 51820/udp
-
-# Запускаем скрипт при старте контейнера
 CMD ["/bin/bash", "/scripts/start.sh"]
